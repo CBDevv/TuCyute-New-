@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     TextView treatValue;
     TextView knowledgeValue;
     TextView gradeLevel;
+    int test = 500;
     int age = 1;
     int treat = 1;
     Switch switch1;
