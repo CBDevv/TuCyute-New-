@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+
+    // sleep animation **************************************
+
+    <item
+        android:drawable="@drawable/ic_sleep3"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/ic_sleep4"
+        android:duration="600"/>
+    <item
+        android:drawable="@drawable/ic_sleep5"
+        android:duration="700"/>
+    <item
+        android:drawable="@drawable/ic_sleep6"
+        android:duration="900"/>
+
+</animation-list>
