@@ -31,13 +31,14 @@ public class MainActivity extends AppCompatActivity {
     public AnimationDrawable talkFaceMovement;
     public AnimationDrawable studyFaceMovement;
 
-    private boolean studyRunning;
-    private CountDownTimer countDownTimer;
-    private static long timeLeftInMilliseconds = 600000; //10 minutes
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String TEXT = "text";
+
+    private String gradeText;
 
     //Age and treats / reward variables
-    TextView ageValue, treatValue, knowledgeValue, gradeLevel;
-    int age, treat;
+    TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue;
+    int age, treat, eatClicks, studyClicks;
     Switch switch1;
 
     @SuppressLint({"WrongViewCast", "RestrictedApi"})
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         themeSong = MediaPlayer.create(this, R.raw.tucyutetheme);
         themeSong.setLooping(false);
         themeSong.setVolume(40,40);
-        themeSong.start();
+        //themeSong.start();
 
         //Face Views assigned
         final ImageView sleepFace = findViewById(R.id.sleepface);
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         treatValue = findViewById(R.id.treatText);
         knowledgeValue = findViewById(R.id.knowledgetext);
         gradeLevel = findViewById(R.id.gradeLevel);
+        eatClickValue = findViewById(R.id.eatClickText);
+        studyClickValue = findViewById(R.id.studyClickText);
 
         // Treat animation flying across screen.
         final ImageView treatsFlying = findViewById(R.id.treats);
@@ -139,13 +142,18 @@ public class MainActivity extends AppCompatActivity {
         treat = myTreat.getInt("treat", 0);
         treatValue.setText("" + treat);
 
+        //Load Grade
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        gradeText = sharedPreferences.getString(TEXT, "");
+        gradeLevel.setText(gradeText);
+
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             //override allows for the music to play in background. The switch is invisible and cannot be accessed.
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (!isChecked) {
-                    themeSong.start();
+                    //themeSong.start();
                 }
             }
         });
@@ -165,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
 
                 eatingFace.setBackgroundResource(R.drawable.eatinganimation);
                 eatingMovement = (AnimationDrawable) eatingFace.getBackground();
+
+                studyFace.setBackgroundResource(R.drawable.blank);
 
                 //starts eating animation
                 eatingMovement.stop();
@@ -204,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
                 //Stops and clears the eating face animation.
                 eatingFace.setBackgroundResource(R.drawable.blank);
 
+                studyFace.setBackgroundResource(R.drawable.blank);
+
                 //Creates the sleep animation.
                 ImageView sleepFace = findViewById(R.id.sleepface);
                 sleepFace.setBackgroundResource(R.drawable.sleepanimation);
@@ -225,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 ageEditor.commit();
                 ageValue.setText("" + age);
 
-                //Counts aging and saves.
+                //Counts treats and saves.
                 treat+=10;
                 //Save age
                 SharedPreferences myTreat = getSharedPreferences("MyTreat", MODE_PRIVATE);
@@ -233,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
                 treatEditor.putInt("treat", treat);
                 treatEditor.commit();
                 treatValue.setText("" + treat);
+
+                //Saves grade level when sleeping
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                gradeEditor.commit();
 
                 //Test if age is a certain value, then give more treats
                 //If age is a certain value, the background will change as the pet ages.
@@ -358,258 +376,95 @@ public class MainActivity extends AppCompatActivity {
                 studyFace.setBackgroundResource(R.drawable.studyanimation);
                 studyFaceMovement = (AnimationDrawable) studyFace.getBackground();
                 studyFaceMovement.start();
-                startStop();
-            }
+                readSound.start();
 
-            private void startStop() {
-                if (studyRunning) {
-                    stopTimer();
-                } else {
-                    startTimer();
-                }
-            }
-
-            @SuppressLint("RestrictedApi")
-            private void startTimer() {
-                countDownTimer = new CountDownTimer(timeLeftInMilliseconds, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        timeLeftInMilliseconds = millisUntilFinished;
-
-                        updateTimer();
-                    }
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                }.start();
-
-                //remove visibility of other buttons while studying.
-                feedButton.setVisibility(View.INVISIBLE);
-                restButton.setVisibility(View.INVISIBLE);
-                playButton.setVisibility(View.INVISIBLE);
+                //Disable Buttons
+                studyButton.setVisibility(View.INVISIBLE);
                 mapButton.setVisibility(View.INVISIBLE);
+                playButton.setVisibility(View.INVISIBLE);
+                restButton.setVisibility(View.INVISIBLE);
+                feedButton.setVisibility(View.INVISIBLE);
 
-                //show disabled buttons while studying
-                restButtonDisabled.setVisibility(View.VISIBLE);
-                feedButtonDisabled.setVisibility(View.VISIBLE);
+                //Shows Second study button
+                studyButton2.setVisibility(View.VISIBLE);
                 playButtonDisabled.setVisibility(View.VISIBLE);
                 mapButtonDisabled.setVisibility(View.VISIBLE);
 
-                readSound.start();
-                studyRunning = true;
-            }
+                //Counts study clicks and saves.
+                studyClicks+=1;
+                //Save study button clicks amount.
+                SharedPreferences myEatClicks = getSharedPreferences("MyStudyClicks", MODE_PRIVATE);
+                SharedPreferences.Editor ageEditor = myEatClicks.edit();
+                ageEditor.putInt("MyStudyClicks", studyClicks);
+                ageEditor.commit();
+                studyClickValue.setText("" + studyClicks);
 
-            @SuppressLint("RestrictedApi")
-            void stopTimer() {
-                countDownTimer.cancel();
+                if (studyClicks == 1){
 
-                //Stop the animation
-                studyFaceMovement.stop();
-                studyFace.setBackgroundResource(R.drawable.ic_blank);
-
-                //Start the idle face movement again.
-                face.setBackgroundResource(R.drawable.idlefaceanimation);
-                idleFaceMovement = (AnimationDrawable) face.getBackground();
-                idleFaceMovement.start();
-
-                //return the visibility of other buttons.
-                feedButton.setVisibility(View.VISIBLE);
-                restButton.setVisibility(View.VISIBLE);
-                playButton.setVisibility(View.VISIBLE);
-
-                //remove the disabled button since studying has been canceled.
-                feedButtonDisabled.setVisibility(View.INVISIBLE);
-                restButtonDisabled.setVisibility(View.INVISIBLE);
-                studyRunning = false;
-            }
-
-            void updateTimer() {
-                int minutes = (int) (timeLeftInMilliseconds / 1000) / 60;
-                int seconds = (int) (timeLeftInMilliseconds / 1000) % 60;
-
-                String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-                knowledgeValue.setText(timeLeftFormatted);
-
-                if (minutes == 9 && seconds == 59){
-
-                    //After certain time of studying, new grade level reached.
-                    gradeLevel.setText("K");
-                }
-                if (minutes == 9 && seconds == 55){
-
-                    gradeLevel.setText("1st");
-                    gradeSound.start();
-
-                    countDownTimer.cancel();
-
-                    //Stop the animation
-                    studyFaceMovement.stop();
-                    studyFace.setBackgroundResource(R.drawable.ic_blank);
-
-                    //Start the idle face movement again.
-                    face.setBackgroundResource(R.drawable.idlefaceanimation);
-                    idleFaceMovement = (AnimationDrawable) face.getBackground();
-                    idleFaceMovement.start();
-
-                    //return the visibility of other buttons.
-                    feedButton.setVisibility(View.VISIBLE);
-                    restButton.setVisibility(View.VISIBLE);
-
-                    //remove the disabled button since studying has been canceled.
-                    feedButtonDisabled.setVisibility(View.INVISIBLE);
-                    restButtonDisabled.setVisibility(View.INVISIBLE);
-
-                    studyButton.setVisibility(View.INVISIBLE);
-
-                    //pause music
-                    themeSong.pause();
-
-                    treat += 100;
-
-                    studyButton2.setVisibility(View.VISIBLE);
-                    mapButton.setVisibility(View.VISIBLE);
-                    playButton.setVisibility(View.VISIBLE);
-
+                    noticeSound.start();
                     //Study Tutorial Dialog Box.
+                    ImageView bookImage = new ImageView(MainActivity.this);
+                    bookImage.setImageResource(R.drawable.ic_book);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Study!")
+                            .setMessage("By studying, you reach new grade levels. Try tapping the study button a few times.")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    //code if they select "yes"
+                                }
+                            })
+                            .setView(bookImage);
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
+                if (studyClicks == 3){
+
+                    gradeLevel.setText("K");
+                    gradeSound.start();
+                    //Eating Tutorial Dialog Box.
                     ImageView gradeImage = new ImageView(MainActivity.this);
                     gradeImage.setImageResource(R.drawable.certificate);
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("1st Grade!")
+                            .setTitle("Kindergartner!")
                             .setMessage("By studying, you reach new grade levels. Each grade level provides bonus treats and your exposure level is increased; allowing you to explore more of the world.")
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
                                 @Override
                                 public void onClick(DialogInterface dialog, int which){
                                     //code if they select "yes"
-                                    treatMovement.start();
-                                    treat = treat + 100;
-
-                                    studyButton2.setVisibility(View.VISIBLE);
-                                    mapButton.setVisibility(View.VISIBLE);
-
-
-                                    themeSong.start();
                                 }
                             })
                             .setView(gradeImage);
 
                     AlertDialog alert = builder.create();
                     alert.show();
-                    }
                 }
+            }
         });
 
-        //Study Button 2nd grade.
         studyButton2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
 
                 //Clears any other animations.
-                face.setBackgroundResource(R.drawable.ic_blank);
-                eatingFace.setBackgroundResource(R.drawable.ic_blank);
-                sleepFace.setBackgroundResource(R.drawable.ic_blank);
-
-                //Creates study animation
-                studyFace.setBackgroundResource(R.drawable.studyanimation);
-                studyFaceMovement = (AnimationDrawable) studyFace.getBackground();
-                studyFaceMovement.start();
-                startStop();
-            }
-
-            private void startStop() {
-                if (studyRunning) {
-                    stopTimer();
-                } else {
-                    startTimer();
-                }
-            }
-
-            @SuppressLint("RestrictedApi")
-            private void startTimer() {
-                countDownTimer = new CountDownTimer(timeLeftInMilliseconds, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        timeLeftInMilliseconds = millisUntilFinished;
-
-                        updateTimer();
-                    }
-                    @Override
-                    public void onFinish() {
-
-                    }
-                }.start();
-                //remove visibility of other buttons while studying.
-                feedButton.setVisibility(View.INVISIBLE);
-                restButton.setVisibility(View.INVISIBLE);
-                mapButton.setVisibility(View.INVISIBLE);
-
-                //show disabled buttons while studying
-                restButtonDisabled.setVisibility(View.VISIBLE);
-                feedButtonDisabled.setVisibility(View.VISIBLE);
-
-                readSound.start();
-                studyRunning = true;
-            }
-
-            @SuppressLint("RestrictedApi")
-            void stopTimer() {
-                countDownTimer.cancel();
-
-                //Stop the animation
+                studyFace.setBackgroundResource(R.drawable.idlefaceanimation);
                 studyFaceMovement.stop();
-                studyFace.setBackgroundResource(R.drawable.ic_blank);
 
-                //Start the idle face movement again.
-                face.setBackgroundResource(R.drawable.idlefaceanimation);
-                idleFaceMovement = (AnimationDrawable) face.getBackground();
-                idleFaceMovement.start();
-
-                //return the visibility of other buttons.
-                feedButton.setVisibility(View.VISIBLE);
+                //Enable Buttons back.
+                studyButton.setVisibility(View.VISIBLE);
+                mapButton.setVisibility(View.VISIBLE);
+                playButton.setVisibility(View.VISIBLE);
                 restButton.setVisibility(View.VISIBLE);
+                feedButton.setVisibility(View.VISIBLE);
 
-                //remove the disabled button since studying has been canceled.
-                feedButtonDisabled.setVisibility(View.INVISIBLE);
-                restButtonDisabled.setVisibility(View.INVISIBLE);
-                studyRunning = false;
-            }
+                //Shows Second study button
+                studyButton2.setVisibility(View.INVISIBLE);
+                playButtonDisabled.setVisibility(View.INVISIBLE);
+                mapButtonDisabled.setVisibility(View.INVISIBLE);
 
-            void updateTimer() {
-                int minutes = (int) (timeLeftInMilliseconds / 1000) / 60;
-                int seconds = (int) (timeLeftInMilliseconds / 1000) % 60;
-
-                String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-                knowledgeValue.setText(timeLeftFormatted);
-
-                if (minutes == 9 && seconds == 48){
-
-                    gradeLevel.setText("2nd");
-                    gradeSound.start();
-
-                    countDownTimer.cancel();
-
-                    //Stop the animation
-                    studyFaceMovement.stop();
-                    studyFace.setBackgroundResource(R.drawable.ic_blank);
-
-                    //Start the idle face movement again.
-                    face.setBackgroundResource(R.drawable.idlefaceanimation);
-                    idleFaceMovement = (AnimationDrawable) face.getBackground();
-                    idleFaceMovement.start();
-
-                    //return the visibility of other buttons.
-                    feedButton.setVisibility(View.VISIBLE);
-                    restButton.setVisibility(View.VISIBLE);
-                    mapButton.setVisibility(View.VISIBLE);
-
-                    //remove the disabled button since studying has been canceled.
-                    feedButtonDisabled.setVisibility(View.INVISIBLE);
-                    restButtonDisabled.setVisibility(View.INVISIBLE);
-
-                    //pause music
-                    themeSong.pause();
-                }
+                idleFaceMovement.start();
             }
         });
 
@@ -622,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                     //If player is older than 3, .....
 
                 } else {
-                    themeSong.pause();
+                    //themeSong.pause();
                     //Show age requirement dialog.
                     noticeSound.start();
                     ImageView clockImage = new ImageView(MainActivity.this);
@@ -634,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which){
                                     //code if they select "Okay"
-                                    themeSong.start();
+                                    //themeSong.start();
                                 }
                             })
                             .setView(clockImage);
@@ -654,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                     //If player is in 5th grade, .....
 
                 } else {
-                    themeSong.pause();
+                    //themeSong.pause();
                     //Show age requirement dialog.
                     noticeSound.start();
                     ImageView bookImage = new ImageView(MainActivity.this);
@@ -666,7 +521,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which){
                                     //code if they select "Okay"
-                                    themeSong.start();
+                                    //themeSong.start();
                                 }
                             })
                             .setView(bookImage);
