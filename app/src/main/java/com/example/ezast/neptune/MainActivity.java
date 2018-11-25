@@ -137,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
         face.setBackgroundResource(R.drawable.idlefaceanimation);
         idleFaceMovement = (AnimationDrawable) face.getBackground();
 
+        //Load Age
+        SharedPreferences myAge = this.getSharedPreferences("MyAge", MODE_PRIVATE);
+        age = myAge.getInt("age", 0);
+
+        ageValue.setText("" + age);
+
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             //override allows for the music to play in background. The switch is invisible and cannot be accessed.
@@ -215,13 +221,17 @@ public class MainActivity extends AppCompatActivity {
                 energyBarMovement.stop();
 
                 //Counts the click of the rest button and aging the pet.
-                age++;
-                ageValue.setText(Integer.toString(age));
+                age+=1;
+                //Save age
+                SharedPreferences myAge = getSharedPreferences("MyAge", MODE_PRIVATE);
+                SharedPreferences.Editor editor = myAge.edit();
+                editor.putInt("age", age);
+                editor.commit();
+
+                ageValue.setText("" + age);
 
                 //Test if age is a certain value, then give more treats
                 //If age is a certain value, the background will change as the pet ages.
-
-                saveData();
 
                 if ((age == 5)) {
 
@@ -668,26 +678,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Load the age saved data.
-        loadData();
-        updateViews();
-    }
-
-    public void saveData(){
-
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putInt(AGE, age);
-        editor.apply();
-    }
-
-    public void loadData(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        text = sharedPreferences.getInt(AGE, (age));
-    }
-
-    public void updateViews(){
-        ageValue.setText(Integer.toString(text));
     }
 }
