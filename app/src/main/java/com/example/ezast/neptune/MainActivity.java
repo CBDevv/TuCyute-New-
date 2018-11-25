@@ -31,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
     public AnimationDrawable talkFaceMovement;
     public AnimationDrawable studyFaceMovement;
 
+    private static final long START_TIME_IN_MILLIS = 600000; //10 min
+    private CountDownTimer mCountDownTimer;
+    private boolean mTimerRunning;
+    private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
+
+
+
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
 
@@ -142,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
         treat = myTreat.getInt("treat", 0);
         treatValue.setText("" + treat);
 
+        //Load Study Clicks
+        SharedPreferences myStudyClick = this.getSharedPreferences("MyStudyClick", MODE_PRIVATE);
+        studyClicks = myStudyClick.getInt("studyClick", 0);
+        studyClickValue.setText("" + studyClicks);
+
         //Load Grade
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         gradeText = sharedPreferences.getString(TEXT, "");
@@ -164,18 +176,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //Stops the idle face animation
-                idleFaceMovement.stop();
                 face.setBackgroundResource(R.drawable.blank);
-
-                //Stops the sleep face animation
-                sleepFace.setBackgroundResource(R.drawable.blank);
-                //Creates eating animation
-
-                eatingFace.setBackgroundResource(R.drawable.eatinganimation);
-                eatingMovement = (AnimationDrawable) eatingFace.getBackground();
-
                 studyFace.setBackgroundResource(R.drawable.blank);
+                sleepFace.setBackgroundResource(R.drawable.blank);
 
+                ImageView eatFace = findViewById(R.id.eatingface);
+                eatFace.setBackgroundResource(R.drawable.eatinganimation);
+                eatingMovement = (AnimationDrawable) eatFace.getBackground();
                 //starts eating animation
                 eatingMovement.stop();
                 eatingMovement.start();
@@ -234,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences myAge = getSharedPreferences("MyAge", MODE_PRIVATE);
                 SharedPreferences.Editor ageEditor = myAge.edit();
                 ageEditor.putInt("age", age);
-                ageEditor.commit();
+                ageEditor.apply();
                 ageValue.setText("" + age);
 
                 //Counts treats and saves.
@@ -243,14 +250,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences myTreat = getSharedPreferences("MyTreat", MODE_PRIVATE);
                 SharedPreferences.Editor treatEditor = myTreat.edit();
                 treatEditor.putInt("treat", treat);
-                treatEditor.commit();
+                treatEditor.apply();
                 treatValue.setText("" + treat);
-
-                //Saves grade level when sleeping
-                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
-                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
-                gradeEditor.commit();
 
                 //Test if age is a certain value, then give more treats
                 //If age is a certain value, the background will change as the pet ages.
@@ -376,7 +377,6 @@ public class MainActivity extends AppCompatActivity {
                 studyFace.setBackgroundResource(R.drawable.studyanimation);
                 studyFaceMovement = (AnimationDrawable) studyFace.getBackground();
                 studyFaceMovement.start();
-                readSound.start();
 
                 //Disable Buttons
                 studyButton.setVisibility(View.INVISIBLE);
@@ -393,10 +393,10 @@ public class MainActivity extends AppCompatActivity {
                 //Counts study clicks and saves.
                 studyClicks+=1;
                 //Save study button clicks amount.
-                SharedPreferences myEatClicks = getSharedPreferences("MyStudyClicks", MODE_PRIVATE);
-                SharedPreferences.Editor ageEditor = myEatClicks.edit();
-                ageEditor.putInt("MyStudyClicks", studyClicks);
-                ageEditor.commit();
+                SharedPreferences myStudyClick = getSharedPreferences("MyStudyClick", MODE_PRIVATE);
+                SharedPreferences.Editor studyClickEditor = myStudyClick.edit();
+                studyClickEditor.putInt("studyClick", studyClicks);
+                studyClickEditor.apply();
                 studyClickValue.setText("" + studyClicks);
 
                 if (studyClicks == 1){
@@ -420,6 +420,8 @@ public class MainActivity extends AppCompatActivity {
                     alert.show();
                 }
 
+                if (studyClicks == 2){readSound.start();}
+
                 if (studyClicks == 3){
 
                     gradeLevel.setText("K");
@@ -441,6 +443,61 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog alert = builder.create();
                     alert.show();
                 }
+
+                if (studyClicks == 8){readSound.start();}
+
+                if (studyClicks == 10){
+
+                    gradeLevel.setText("1st");
+                    gradeSound.start();
+                    //Eating Tutorial Dialog Box.
+                    ImageView gradeImage = new ImageView(MainActivity.this);
+                    gradeImage.setImageResource(R.drawable.certificate);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("1st Grade!")
+                            .setMessage("")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    //code if they select "yes"
+                                }
+                            })
+                            .setView(gradeImage);
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
+                if (studyClicks == 14){readSound.start();}
+                if (studyClicks == 18){readSound.start();}
+
+                if (studyClicks == 20){
+
+                    gradeLevel.setText("2nd");
+                    gradeSound.start();
+                    //Eating Tutorial Dialog Box.
+                    ImageView gradeImage = new ImageView(MainActivity.this);
+                    gradeImage.setImageResource(R.drawable.certificate);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("2nd Grade!")
+                            .setMessage("")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    //code if they select "yes"
+                                }
+                            })
+                            .setView(gradeImage);
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
+                //Saves grade level when sleeping
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                gradeEditor.apply();
             }
         });
 
@@ -468,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //House Button
+        //Play Button
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
