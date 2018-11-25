@@ -35,17 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private static long timeLeftInMilliseconds = 600000; //10 minutes
 
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String AGE = "age";
-    private int text;
-
     //Age and treats / reward variables
-    TextView ageValue;
-    TextView treatValue;
-    TextView knowledgeValue;
-    TextView gradeLevel;
-    int age;
-    int treat = 1;
+    TextView ageValue, treatValue, knowledgeValue, gradeLevel;
+    int age, treat;
     Switch switch1;
 
     @SuppressLint({"WrongViewCast", "RestrictedApi"})
@@ -140,8 +132,12 @@ public class MainActivity extends AppCompatActivity {
         //Load Age
         SharedPreferences myAge = this.getSharedPreferences("MyAge", MODE_PRIVATE);
         age = myAge.getInt("age", 0);
-
         ageValue.setText("" + age);
+
+        //Load Treats
+        SharedPreferences myTreat = this.getSharedPreferences("MyTreat", MODE_PRIVATE);
+        treat = myTreat.getInt("treat", 0);
+        treatValue.setText("" + treat);
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -220,15 +216,23 @@ public class MainActivity extends AppCompatActivity {
                 sleepFaceMovement.start();
                 energyBarMovement.stop();
 
-                //Counts the click of the rest button and aging the pet.
+                //Counts aging and saves.
                 age+=1;
                 //Save age
                 SharedPreferences myAge = getSharedPreferences("MyAge", MODE_PRIVATE);
-                SharedPreferences.Editor editor = myAge.edit();
-                editor.putInt("age", age);
-                editor.commit();
-
+                SharedPreferences.Editor ageEditor = myAge.edit();
+                ageEditor.putInt("age", age);
+                ageEditor.commit();
                 ageValue.setText("" + age);
+
+                //Counts aging and saves.
+                treat+=10;
+                //Save age
+                SharedPreferences myTreat = getSharedPreferences("MyTreat", MODE_PRIVATE);
+                SharedPreferences.Editor treatEditor = myTreat.edit();
+                treatEditor.putInt("treat", treat);
+                treatEditor.commit();
+                treatValue.setText("" + treat);
 
                 //Test if age is a certain value, then give more treats
                 //If age is a certain value, the background will change as the pet ages.
@@ -264,11 +268,6 @@ public class MainActivity extends AppCompatActivity {
                     //Starts the idle face animation again
                     ImageView face = findViewById(R.id.mainface);
                     idleFaceMovement = (AnimationDrawable) face.getBackground();
-
-                } if (age >= 0) {
-                    //Adding treats upon touch.
-                    treatValue.setText(Integer.toString(treat));
-                    treat = treat + 10;
                 }
 
                 if ((age == 10)) {
@@ -383,16 +382,20 @@ public class MainActivity extends AppCompatActivity {
                     public void onFinish() {
 
                     }
+
                 }.start();
+
                 //remove visibility of other buttons while studying.
                 feedButton.setVisibility(View.INVISIBLE);
                 restButton.setVisibility(View.INVISIBLE);
-                mapButton.setVisibility(View.INVISIBLE);
                 playButton.setVisibility(View.INVISIBLE);
+                mapButton.setVisibility(View.INVISIBLE);
 
                 //show disabled buttons while studying
                 restButtonDisabled.setVisibility(View.VISIBLE);
                 feedButtonDisabled.setVisibility(View.VISIBLE);
+                playButtonDisabled.setVisibility(View.VISIBLE);
+                mapButtonDisabled.setVisibility(View.VISIBLE);
 
                 readSound.start();
                 studyRunning = true;
@@ -414,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                 //return the visibility of other buttons.
                 feedButton.setVisibility(View.VISIBLE);
                 restButton.setVisibility(View.VISIBLE);
+                playButton.setVisibility(View.VISIBLE);
 
                 //remove the disabled button since studying has been canceled.
                 feedButtonDisabled.setVisibility(View.INVISIBLE);
@@ -457,20 +461,16 @@ public class MainActivity extends AppCompatActivity {
                     feedButtonDisabled.setVisibility(View.INVISIBLE);
                     restButtonDisabled.setVisibility(View.INVISIBLE);
 
-                    /*Remove this button so the study
-                    button 2 transitions and appears underneath.
-                    -- Work around --
-                     */
-
                     studyButton.setVisibility(View.INVISIBLE);
 
                     //pause music
                     themeSong.pause();
 
-                    treat = treat + 100;
+                    treat += 100;
 
                     studyButton2.setVisibility(View.VISIBLE);
                     mapButton.setVisibility(View.VISIBLE);
+                    playButton.setVisibility(View.VISIBLE);
 
                     //Study Tutorial Dialog Box.
                     ImageView gradeImage = new ImageView(MainActivity.this);
@@ -543,7 +543,6 @@ public class MainActivity extends AppCompatActivity {
                 feedButton.setVisibility(View.INVISIBLE);
                 restButton.setVisibility(View.INVISIBLE);
                 mapButton.setVisibility(View.INVISIBLE);
-                playButton.setVisibility(View.INVISIBLE);
 
                 //show disabled buttons while studying
                 restButtonDisabled.setVisibility(View.VISIBLE);
