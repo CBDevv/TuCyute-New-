@@ -558,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (gradeLevel.getText().toString().contentEquals("")) {
 
-            if (knowledgeValue.getText().toString().contentEquals("1439:57")) {
+            if (mTimeLeftInMillis <= 86399999) {
                 sound.playGradeSound();
                 gradeLevel.setText("K");
                 //Eating Tutorial Dialog Box.
@@ -588,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (gradeLevel.getText().toString().contentEquals("K")) {
 
-            if (knowledgeValue.getText().toString().contentEquals("1439:45")) {
+            if (mTimeLeftInMillis <= 86370000) {
                 sound.playGradeSound();
                 gradeLevel.setText("1st");
                 //Eating Tutorial Dialog Box.
@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (gradeLevel.getText().toString().contentEquals("1st")) {
 
-            if (knowledgeValue.getText().toString().contentEquals("1437:30")) {
+            if (mTimeLeftInMillis <= 86318000) {
                 sound.playGradeSound();
                 gradeLevel.setText("2nd");
                 //Eating Tutorial Dialog Box.
@@ -647,15 +647,334 @@ public class MainActivity extends AppCompatActivity {
 
         if (gradeLevel.getText().toString().contentEquals("2nd")) {
 
-            if (knowledgeValue.getText().toString().contentEquals("1430:00")) {
+            if (mTimeLeftInMillis <= 85900000) {
                 sound.playGradeSound();
                 gradeLevel.setText("3rd");
                 //Eating Tutorial Dialog Box.
                 ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge2);
+                badgeImage.setImageResource(R.drawable.badge1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("3rd Grade!")
                         .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("3rd")) {
+
+            if (mTimeLeftInMillis <= 85400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("4th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge2);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("4th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("4th")) {
+
+            if (mTimeLeftInMillis <= 84400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("5th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.ic_map);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("5th Grade!")
+                        .setMessage("You are now able to travel. Click the map to begin your journey")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("5th")) {
+
+            if (mTimeLeftInMillis <= 83400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("6th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge3);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("6th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("6th")) {
+
+            if (mTimeLeftInMillis <= 82400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("7th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge3);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("7th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("7th")) {
+
+            if (mTimeLeftInMillis <= 80400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("8th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("8th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("8th")) {
+
+            if (mTimeLeftInMillis <= 79400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("9th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("9th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("9th")) {
+
+            if (mTimeLeftInMillis <= 78400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("10th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("10th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("10th")) {
+
+            if (mTimeLeftInMillis <= 70400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("11th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("11th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("11th")) {
+
+            if (mTimeLeftInMillis <= 67613000) {
+                sound.playGradeSound();
+                gradeLevel.setText("12th");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("12th Grade!")
+                        .setMessage("")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("12th")) {
+
+            if (mTimeLeftInMillis <= 66400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("C");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge5);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("College!")
+                        .setMessage("Congratulations! You have successfully graduated high school!")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //code if they select "yes"
+                                //Saves grade level
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor gradeEditor = sharedPreferences.edit();
+                                gradeEditor.putString(TEXT, gradeLevel.getText().toString());
+                                gradeEditor.apply();
+                            }
+                        })
+                        .setView(badgeImage);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+
+        if (gradeLevel.getText().toString().contentEquals("C")) {
+
+            if (mTimeLeftInMillis <= 46400000) {
+                sound.playGradeSound();
+                gradeLevel.setText("M");
+                //Eating Tutorial Dialog Box.
+                ImageView badgeImage = new ImageView(MainActivity.this);
+                badgeImage.setImageResource(R.drawable.badge6);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Masters Degree!")
+                        .setMessage("Wow! You now have your masters! Not much more to learn!")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
