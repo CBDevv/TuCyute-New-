@@ -20,6 +20,7 @@ public class SoundPlayer {
     private static int noticeSound;
     private static int treatSound;
     private static int touchSound;
+    private static int themeSound;
 
 
     public SoundPlayer(Context context){
@@ -46,7 +47,7 @@ public class SoundPlayer {
         gradeSound = soundPool.load(context, R.raw.gradelevelsound, 1);
         noticeSound = soundPool.load(context, R.raw.notification, 1);
         treatSound = soundPool.load(context, R.raw.treatsound, 1);
-        touchSound = soundPool.load(context, R.raw.soundfx1, 1);
+        themeSound = soundPool.load(context, R.raw.theme, 1);
 
     }
 
@@ -75,5 +76,9 @@ public class SoundPlayer {
     public void playTouchSound(){
         soundPool.play(touchSound, 1.0f, 1.0f, 1, 0, 1.0f);
     }
+    public void playThemeSound(){
+        soundPool.play(themeSound, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
 
 }
