@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
@@ -49,11 +50,22 @@ public class MainActivity extends AppCompatActivity {
     int age, treat, eatClicks, studyClicks;
     Switch switch1;
 
+    ImageView studyLoadK;
+    ImageView studyLoadFirst;
+
     @SuppressLint({"WrongViewCast", "RestrictedApi"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //sound.playThemeSound();
+
+        ConstraintLayout constraintLayout = findViewById(R.id.layout);
+        AnimationDrawable backgroundDrawable1 = (AnimationDrawable) constraintLayout.getBackground();
+        backgroundDrawable1.setEnterFadeDuration(2000);
+        backgroundDrawable1.setExitFadeDuration(2000);
+        backgroundDrawable1.start();
 
         sound = new SoundPlayer(this);
 
@@ -62,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Link for the background music while starting.
         final MediaPlayer themeSong;
-        themeSong = MediaPlayer.create(this, R.raw.tucyutetheme);
+        themeSong = MediaPlayer.create(this, R.raw.theme);
         themeSong.setLooping(false);
-        themeSong.setVolume(40, 40);
-        //themeSong.start();
+        themeSong.setVolume(1, 1);
+        themeSong.start();
+
 
         //Face Views assigned
         final ImageView sleepFace = findViewById(R.id.sleepface);
@@ -95,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         eatClickValue = findViewById(R.id.eatClickText);
         studyClickValue = findViewById(R.id.studyClickText);
 
-        // Treat animation flying across screen.
+        // Animations to start.
         final ImageView treatsFlying = findViewById(R.id.treats);
         treatsFlying.setBackgroundResource(R.drawable.treatanimation);
         treatMovement = (AnimationDrawable) treatsFlying.getBackground();
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (!isChecked) {
-                    //themeSong.start();
+                    themeSong.start();
                 }
             }
         });
@@ -260,46 +273,24 @@ public class MainActivity extends AppCompatActivity {
                 //If age is a certain value, the background will change as the pet ages.
 
                 if ((age == 10)) {
-
                     //Change the background
-                    ImageView backgroundMain2 = findViewById(R.id.background4);
-                    backgroundMain2.setVisibility(View.GONE);
-
                     Toast.makeText(getApplicationContext(), "Teenager", Toast.LENGTH_SHORT).show();
                 }
-
                 if ((age == 20)) {
-
                     //Change the background
-                    ImageView backgroundMain3 = findViewById(R.id.background5);
-                    backgroundMain3.setVisibility(View.GONE);
-
                     Toast.makeText(getApplicationContext(), "Adulthood!", Toast.LENGTH_SHORT).show();
                 }
-
                 if ((age == 30)) {
 
                     //Change the background
-                    ImageView backgroundMain4 = findViewById(R.id.background6);
-                    backgroundMain4.setVisibility(View.GONE);
                 }
-
                 if ((age == 35)) {
-
                     //Change the background
-                    ImageView backgroundMain5 = findViewById(R.id.background7);
-                    backgroundMain5.setVisibility(View.GONE);
                 }
-
                 if ((age == 40)) {
-
                     //Change the background
-                    ImageView backgroundMain7 = findViewById(R.id.background8);
-                    backgroundMain7.setVisibility(View.GONE);
-
                     Toast.makeText(getApplicationContext(), "Senior Citizen!", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -343,8 +334,6 @@ public class MainActivity extends AppCompatActivity {
                     treatMovement.start();
 
                     //Set the background
-                    ImageView backgroundMain1 = findViewById(R.id.background2);
-                    backgroundMain1.setVisibility(View.GONE);
 
                     //Clears the sleep face animation when the button is pressed.
                     sleepFace.setBackgroundResource(R.drawable.blank);
@@ -421,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
                     restButton.setVisibility(View.VISIBLE);
                     feedButton.setVisibility(View.VISIBLE);
 
-                    //Shows Second study button
+                    //Remove disabled buttons
                     playButtonDisabled.setVisibility(View.INVISIBLE);
                     mapButtonDisabled.setVisibility(View.INVISIBLE);
 
@@ -467,6 +456,29 @@ public class MainActivity extends AppCompatActivity {
                 if (age >= 3) {
                     //If player is older than 3, .....
 
+                    // setup the alert builder
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Pick a game");
+                    builder.setIcon(R.drawable.playbuton);
+                    // add a list
+                    String[] activities = {"Tic Tac Cute", "Connect Me", "I Spy", "Tu-Color"};
+                    builder.setItems(activities, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0: {Toast.makeText(getApplicationContext(), "Tic Tac Cute!", Toast.LENGTH_SHORT).show();}
+                                case 1: {Toast.makeText(getApplicationContext(), "Connect Me!", Toast.LENGTH_SHORT).show();}
+                                case 2: {Toast.makeText(getApplicationContext(), "I Spy!", Toast.LENGTH_SHORT).show();}
+                                case 3: {Toast.makeText(getApplicationContext(), "Tu Color!", Toast.LENGTH_SHORT).show();}
+                                case 4: //
+                            }
+                        }
+                    });
+
+                    // create and show the alert dialog
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
                 } else {
                     //themeSong.pause();
                     //Show age requirement dialog.
@@ -499,7 +511,54 @@ public class MainActivity extends AppCompatActivity {
                 if (gradeLevel.getText().toString().contentEquals("5th")) {
                     //If player is in 5th grade, .....
 
-                } else {
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("6th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("7th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("8th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (gradeLevel.getText().toString().contentEquals("9th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("10th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("11th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("12th")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else if (gradeLevel.getText().toString().contentEquals("C")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }
+                else  if (gradeLevel.getText().toString().contentEquals("M")) {
+                    //If player is in 5th grade, .....
+
+                    Toast.makeText(getApplicationContext(), "Soon to come!", Toast.LENGTH_SHORT).show();
+                }else {
                     //themeSong.pause();
                     //Show age requirement dialog.
                     sound.playNoticeSound();
@@ -540,7 +599,8 @@ public class MainActivity extends AppCompatActivity {
         }.start();
 
         mTimerRunning = true;
-        //Code for when timer IS running
+
+        //Code for when timer IS running (every tick)
     }
 
     private void pauseTimer() {
@@ -566,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
                 gradeImage.setImageResource(R.drawable.certificate);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Kindergarten")
-                        .setMessage("Grade level provides bonus treats. Your exposure level is also increased which allowing you to explore more of the world.")
+                        .setMessage("Each grade level provides extra treats. Your exposure level is also increased which allows you to explore more of the world.")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -992,5 +1052,10 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
             }
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
     }
 }
