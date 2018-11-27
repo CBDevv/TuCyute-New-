@@ -9,10 +9,10 @@ TuCyute brings a new virtual pet and casual mobile gaming experience.
 
 # Features
 
-- [ ] Talk to your TuCyute
 - [x] Feed your TuCyute
 - [ ] Play with your TuCyute
 - [ ] Dress your TuCyute
+- [ ] Listen to your TuCyute's needs
 - [x] Earn & Spend Treats
 - [x] Teach your TuCyute
 - [x] Rest your TuCyute
