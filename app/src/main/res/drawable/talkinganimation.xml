@@ -23,13 +23,13 @@
         android:duration="100"/>
     <item
         android:drawable="@drawable/ic_talk1"
-        android:duration="250"/>
+        android:duration="200"/>
     <item
         android:drawable="@drawable/ic_talk4"
         android:duration="100"/>
     <item
         android:drawable="@drawable/ic_talk3"
-        android:duration="150"/>
+        android:duration="100"/>
     <item
         android:drawable="@drawable/ic_talk5"
         android:duration="100"/>
@@ -48,28 +48,28 @@
     //eye blink
     <item
         android:drawable="@drawable/ic_eyeblink1"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink2"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink3"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink4"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink5"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink4"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink3"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink2"
-        android:duration="35"/>
+        android:duration="15"/>
     <item
         android:drawable="@drawable/ic_eyeblink1"
         android:duration="3500" />
