@@ -40,13 +40,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
+    public static final String SHARED_PREFS2 = "sharedPrefs2";
+    public static final String TEXT2 = "text2";
 
     private String gradeText;
+    private String statusText;
 
     private SoundPlayer sound;
 
     //Age and treats / reward variables
-    TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue;
+    TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue, ageStatusText;
     int age, treat, eatClicks, studyClicks;
     Switch switch1;
 
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         gradeLevel = findViewById(R.id.gradeLevel);
         eatClickValue = findViewById(R.id.eatClickText);
         studyClickValue = findViewById(R.id.studyClickText);
+        ageStatusText = findViewById(R.id.statusText);
 
         // Animations to start.
         final ImageView treatsFlying = findViewById(R.id.treats);
@@ -148,20 +152,25 @@ public class MainActivity extends AppCompatActivity {
         age = myAge.getInt("age", 0);
         ageValue.setText("" + age);
 
+        //Load Age Status
+        SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREFS2, MODE_PRIVATE);
+        statusText = sharedPreferences2.getString(TEXT2, "");
+        ageStatusText.setText(statusText);
+
         //Load Treats
         SharedPreferences myTreat = this.getSharedPreferences("MyTreat", MODE_PRIVATE);
         treat = myTreat.getInt("treat", 0);
         treatValue.setText("" + treat);
 
-        /*Load Study Time
-        SharedPreferences myStudyTime = this.getSharedPreferences("myStudyTime", MODE_PRIVATE);
-        mTimeLeftInMillis = myStudyTime.getLong("studyTime", 0);
-        knowledgeValue.setText("" + mTimeLeftInMillis);*/
-
         //Load Study Clicks
         SharedPreferences myStudyClick = this.getSharedPreferences("MyStudyClick", MODE_PRIVATE);
         studyClicks = myStudyClick.getInt("studyClick", 0);
         studyClickValue.setText("" + studyClicks);
+
+        //Load Eat Clicks
+        SharedPreferences myEatClick = this.getSharedPreferences("MyEatClick", MODE_PRIVATE);
+        eatClicks = myEatClick.getInt("eatClick", 0);
+        eatClickValue.setText("" + eatClicks);
 
         //Load Grade
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -183,6 +192,36 @@ public class MainActivity extends AppCompatActivity {
         feedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //Counts study clicks and saves.
+                eatClicks += 1;
+                //Save eat button clicks amount.
+                SharedPreferences myEatClick = getSharedPreferences("MyEatClick", MODE_PRIVATE);
+                SharedPreferences.Editor eatClickEditor = myEatClick.edit();
+                eatClickEditor.putInt("eatClick", eatClicks);
+                eatClickEditor.apply();
+                eatClickValue.setText("" + eatClicks);
+
+                if (eatClicks == 1) {
+
+                    sound.playNoticeSound();
+                    //Study Tutorial Dialog Box.
+                    ImageView carrotImage = new ImageView(MainActivity.this);
+                    carrotImage.setImageResource(R.drawable.ic_carrot);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Eating!")
+                            .setMessage("Maintain the overall health of TuCyute by eating regularly.")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //code if they select "yes"
+                                }
+                            })
+                            .setView(carrotImage);
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
 
                 //Stops the idle face animation
                 face.setBackgroundResource(R.drawable.blank);
@@ -272,25 +311,25 @@ public class MainActivity extends AppCompatActivity {
                 //Test if age is a certain value, then give more treats
                 //If age is a certain value, the background will change as the pet ages.
 
-                if ((age == 10)) {
-                    //Change the background
-                    Toast.makeText(getApplicationContext(), "Teenager", Toast.LENGTH_SHORT).show();
+                if ((age >= 0)) {
+                    ageStatusText.setText("Infant");
+                }
+                if ((age >= 3)) {
+                    ageStatusText.setText("Toddler");
+                }
+                if ((age >= 13)) {
+                    ageStatusText.setText("Teenager");
                 }
                 if ((age == 20)) {
-                    //Change the background
-                    Toast.makeText(getApplicationContext(), "Adulthood!", Toast.LENGTH_SHORT).show();
+                    ageStatusText.setText("Adult");
                 }
                 if ((age == 30)) {
-
-                    //Change the background
                 }
                 if ((age == 35)) {
-                    //Change the background
                 }
-                if ((age == 40)) {
-                    //Change the background
-                    Toast.makeText(getApplicationContext(), "Senior Citizen!", Toast.LENGTH_SHORT).show();
-                }
+                if ((age >= 60)) {
+                    ageStatusText.setText("Senior Citizen");
+                    }
             }
         });
 
@@ -326,7 +365,6 @@ public class MainActivity extends AppCompatActivity {
 
                     //Play the eating sound
                     //treatSound.start();
-                    Toast.makeText(getApplicationContext(), "Toddler", Toast.LENGTH_SHORT).show();
 
                     //Adding treats upon sleep.
                     treatValue.setText(Integer.toString(treat));
@@ -348,6 +386,12 @@ public class MainActivity extends AppCompatActivity {
 
                     sound.playTalkSound();
                 }
+
+                //Saves age status level
+                SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREFS2, MODE_PRIVATE);
+                SharedPreferences.Editor agestatusEditor = sharedPreferences2.edit();
+                agestatusEditor.putString(TEXT2, ageStatusText.getText().toString());
+                agestatusEditor.apply();
             }
         });
 
@@ -357,8 +401,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 sound.playReadSound();
-
-                //sound.playReadSound();
                 sound.playTouchSound();
                 //Clears any other animations.
                 face.setBackgroundResource(R.drawable.ic_blank);
@@ -380,13 +422,6 @@ public class MainActivity extends AppCompatActivity {
                 playButtonDisabled.setVisibility(View.VISIBLE);
                 mapButtonDisabled.setVisibility(View.VISIBLE);
                 feedButtonDisabled.setVisibility(View.VISIBLE);
-
-                /*Save study time amount.
-                SharedPreferences myStudyTime = getSharedPreferences("myStudyTime", MODE_PRIVATE);
-                SharedPreferences.Editor studyTimeEditor = myStudyTime.edit();
-                studyTimeEditor.putLong("studyTime", mTimeLeftInMillis);
-                studyTimeEditor.apply();
-                knowledgeValue.setText("" + mTimeLeftInMillis);*/
 
                 //Counts study clicks and saves.
                 studyClicks += 1;
@@ -466,10 +501,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                                case 0: {Toast.makeText(getApplicationContext(), "Tic Tac Cute!", Toast.LENGTH_SHORT).show();}
-                                case 1: {Toast.makeText(getApplicationContext(), "Connect Me!", Toast.LENGTH_SHORT).show();}
-                                case 2: {Toast.makeText(getApplicationContext(), "I Spy!", Toast.LENGTH_SHORT).show();}
-                                case 3: {Toast.makeText(getApplicationContext(), "Tu Color!", Toast.LENGTH_SHORT).show();}
+                                case 0: {Toast.makeText(getApplicationContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();}
+                                break;
+                                case 1: {Toast.makeText(getApplicationContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();}
+                                break;
+                                case 2: {Toast.makeText(getApplicationContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();}
+                                break;
+                                case 3: {Toast.makeText(getApplicationContext(), "Coming Soon!", Toast.LENGTH_SHORT).show();}
+                                break;
                                 case 4: //
                             }
                         }
@@ -619,6 +658,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("")) {
 
             if (mTimeLeftInMillis <= 86399999) {
+                treat += 10;
                 sound.playGradeSound();
                 gradeLevel.setText("K");
                 //Eating Tutorial Dialog Box.
@@ -649,14 +689,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("K")) {
 
             if (mTimeLeftInMillis <= 86370000) {
+                treat += 20;
                 sound.playGradeSound();
                 gradeLevel.setText("1st");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("1st Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -668,8 +708,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
+                        });
 
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -679,14 +718,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("1st")) {
 
             if (mTimeLeftInMillis <= 86318000) {
+                treat += 30;
                 sound.playGradeSound();
                 gradeLevel.setText("2nd");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("2nd Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -697,9 +736,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -708,6 +745,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("2nd")) {
 
             if (mTimeLeftInMillis <= 85900000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("3rd");
                 //Eating Tutorial Dialog Box.
@@ -716,6 +754,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("3rd Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -737,14 +776,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("3rd")) {
 
             if (mTimeLeftInMillis <= 85400000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("4th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge2);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("4th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -755,8 +794,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
+                        });
 
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -766,6 +804,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("4th")) {
 
             if (mTimeLeftInMillis <= 84400000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("5th");
                 //Eating Tutorial Dialog Box.
@@ -773,6 +812,7 @@ public class MainActivity extends AppCompatActivity {
                 badgeImage.setImageResource(R.drawable.ic_map);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("5th Grade!")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setMessage("You are now able to travel. Click the map to begin your journey")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -795,14 +835,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("5th")) {
 
             if (mTimeLeftInMillis <= 83400000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("6th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge3);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("6th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -813,9 +853,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -824,6 +862,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("6th")) {
 
             if (mTimeLeftInMillis <= 82400000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("7th");
                 //Eating Tutorial Dialog Box.
@@ -832,6 +871,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("7th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -853,14 +893,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("7th")) {
 
             if (mTimeLeftInMillis <= 80400000) {
+                treat += 50;
                 sound.playGradeSound();
                 gradeLevel.setText("8th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge4);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("8th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -871,9 +911,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -882,14 +920,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("8th")) {
 
             if (mTimeLeftInMillis <= 79400000) {
+                treat += 100;
                 sound.playGradeSound();
                 gradeLevel.setText("9th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge4);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("9th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -900,9 +938,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -911,14 +947,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("9th")) {
 
             if (mTimeLeftInMillis <= 78400000) {
+                treat += 100;
                 sound.playGradeSound();
                 gradeLevel.setText("10th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge4);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("10th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -929,9 +965,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -940,14 +974,14 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("10th")) {
 
             if (mTimeLeftInMillis <= 70400000) {
+                treat += 100;
                 sound.playGradeSound();
                 gradeLevel.setText("11th");
                 //Eating Tutorial Dialog Box.
-                ImageView badgeImage = new ImageView(MainActivity.this);
-                badgeImage.setImageResource(R.drawable.badge4);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("11th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -958,9 +992,7 @@ public class MainActivity extends AppCompatActivity {
                                 gradeEditor.putString(TEXT, gradeLevel.getText().toString());
                                 gradeEditor.apply();
                             }
-                        })
-                        .setView(badgeImage);
-
+                        });
                 AlertDialog alert = builder.create();
                 alert.show();
             }
@@ -969,6 +1001,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("11th")) {
 
             if (mTimeLeftInMillis <= 67613000) {
+                treat += 100;
                 sound.playGradeSound();
                 gradeLevel.setText("12th");
                 //Eating Tutorial Dialog Box.
@@ -977,6 +1010,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("12th Grade!")
                         .setMessage("")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -998,6 +1032,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("12th")) {
 
             if (mTimeLeftInMillis <= 66400000) {
+                treat += 200;
                 sound.playGradeSound();
                 gradeLevel.setText("C");
                 //Eating Tutorial Dialog Box.
@@ -1005,6 +1040,7 @@ public class MainActivity extends AppCompatActivity {
                 badgeImage.setImageResource(R.drawable.badge5);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("College!")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setMessage("Congratulations! You have successfully graduated high school!")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -1027,6 +1063,7 @@ public class MainActivity extends AppCompatActivity {
         if (gradeLevel.getText().toString().contentEquals("C")) {
 
             if (mTimeLeftInMillis <= 46400000) {
+                treat += 500;
                 sound.playGradeSound();
                 gradeLevel.setText("M");
                 //Eating Tutorial Dialog Box.
@@ -1034,6 +1071,7 @@ public class MainActivity extends AppCompatActivity {
                 badgeImage.setImageResource(R.drawable.badge6);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Masters Degree!")
+                        .setIcon(R.drawable.studybuttonattributes)
                         .setMessage("Wow! You now have your masters! Not much more to learn!")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
