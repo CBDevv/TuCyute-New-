@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public AnimationDrawable talkFaceMovement;
     public AnimationDrawable studyFaceMovement;
 
-    private static long START_TIME_IN_MILLIS = 86400000; //24 hour
+    private static long START_TIME_IN_MILLIS = 86400000; //24 hours
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning;
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private SoundPlayer sound;
 
     //Age and treats / reward variables
-    TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue, ageStatusText;
-    int age, treat, eatClicks, studyClicks;
+    TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue, ageStatusText, restClickValue;
+    int age, treat, eatClicks, studyClicks, restClicks;
     Switch switch1;
 
     ImageView studyLoadK;
@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //sound.playThemeSound();
 
         ConstraintLayout constraintLayout = findViewById(R.id.layout);
         AnimationDrawable backgroundDrawable1 = (AnimationDrawable) constraintLayout.getBackground();
@@ -111,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         eatClickValue = findViewById(R.id.eatClickText);
         studyClickValue = findViewById(R.id.studyClickText);
         ageStatusText = findViewById(R.id.statusText);
+        restClickValue = findViewById(R.id.restClickText);
 
         // Animations to start.
         final ImageView treatsFlying = findViewById(R.id.treats);
@@ -171,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences myEatClick = this.getSharedPreferences("MyEatClick", MODE_PRIVATE);
         eatClicks = myEatClick.getInt("eatClick", 0);
         eatClickValue.setText("" + eatClicks);
+
+        //Load Rest Clicks
+        SharedPreferences myRestClick = this.getSharedPreferences("MyRestClick", MODE_PRIVATE);
+        restClicks = myRestClick.getInt("restClick", 0);
+        restClickValue.setText("" + eatClicks);
 
         //Load Grade
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -249,6 +253,36 @@ public class MainActivity extends AppCompatActivity {
         restButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint({"RestrictedApi", "SetTextI18n"})
             public void onClick(View sleeping) {
+
+                //Counts study clicks and saves.
+                restClicks += 1;
+                //Save eat button clicks amount.
+                SharedPreferences myRestClick = getSharedPreferences("MyRestClick", MODE_PRIVATE);
+                SharedPreferences.Editor restClickEditor = myRestClick.edit();
+                restClickEditor.putInt("restClick", restClicks);
+                restClickEditor.apply();
+                restClickValue.setText("" + restClicks);
+
+                if (restClicks == 1) {
+
+                    sound.playNoticeSound();
+                    //Study Tutorial Dialog Box.
+                    ImageView restImage = new ImageView(MainActivity.this);
+                    restImage.setImageResource(R.drawable.restbutton);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Sleeping!")
+                            .setIcon(R.drawable.restbutton)
+                            .setMessage("TuCyute has to rest sometimes. Sleeping restores energy and provides you with extra treats! Remember, sleeping ages your TuCyute. Don't want TuCyute to pass away pre-maturely!")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //code if they select "yes"
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
 
                 //Buttons no longer visible until the wake button is pressed.
                 restButton.setVisibility(View.INVISIBLE);
@@ -361,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                 idleFaceMovement.start();
                 energyBarMovement.start();
 
-                if ((age == 5)) {
+                if ((age == 1)) {
 
                     //Play the eating sound
                     //treatSound.start();
@@ -370,8 +404,6 @@ public class MainActivity extends AppCompatActivity {
                     treatValue.setText(Integer.toString(treat));
                     treatMovement.stop();
                     treatMovement.start();
-
-                    //Set the background
 
                     //Clears the sleep face animation when the button is pressed.
                     sleepFace.setBackgroundResource(R.drawable.blank);
