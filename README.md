@@ -1,10 +1,10 @@
 # TuCyute
 A new kind of virtual pet / casual mobile game. 
 
-TuCyute creates the ultimate virtual pet experience by turning your phone into a digital dependant. 
-You’ll be responsible for feeding your phone, playing, problem solving for and with your phone. 
-Your phone will need you more than ever! 
-Your phone is the pet and exemplifies a unique personality depending on your phone’s make and model! 
+TuCyute creates a unique virtual pet experience by turning your phone into a digital companion. 
+You’ll be able to feed, play, problem solve and traveling with TuCyute. 
+While you're away, you're pet will be maintaining itself and independant.
+Your phone is the pet and exemplifies a unique personality depending on the time of day! 
 TuCyute brings a new virtual pet and casual mobile gaming experience. 
 
 # Features
@@ -12,7 +12,7 @@ TuCyute brings a new virtual pet and casual mobile gaming experience.
 - [x] Feed your TuCyute
 - [ ] Play with your TuCyute
 - [ ] Dress your TuCyute
-- [ ] Listen to your TuCyute's needs
+- [ ] Listen to your TuCyute's expressions
 - [x] Earn & Spend Treats
 - [x] Teach your TuCyute
 - [x] Rest your TuCyute
