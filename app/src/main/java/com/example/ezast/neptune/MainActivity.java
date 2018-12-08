@@ -7,6 +7,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Locale;
+
+/**
+ * Created by: Chris Butler
+ * TuCyute - A Mobile Casual Game
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     private String statusText;
 
     private SoundPlayer sound;
+    private Handler greetingHandler = new Handler();
+    private Handler howareyouHandler = new Handler();
+
 
     //Age and treats / reward variables
     TextView ageValue, treatValue, knowledgeValue, gradeLevel, eatClickValue, studyClickValue, ageStatusText, restClickValue;
@@ -61,6 +70,40 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Greeting
+            final Runnable greetingRunnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    //Starts the talking face animation again
+                    ImageView talk = findViewById(R.id.mainface);
+                    talk.setBackgroundResource(R.drawable.talkinganimation);
+                    talkFaceMovement = (AnimationDrawable) talk.getBackground();
+                    talkFaceMovement.start();
+
+                    //Start the talking sounds
+                    sound.playTalkSound();
+                }
+            };
+            greetingHandler.postDelayed(greetingRunnable, 2000);
+            final Runnable howareyouRunnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    //Starts the talking face animation again
+                    ImageView talk = findViewById(R.id.mainface);
+                    talk.setBackgroundResource(R.drawable.talkinganimation);
+                    talkFaceMovement = (AnimationDrawable) talk.getBackground();
+                    talkFaceMovement.stop();
+                    talkFaceMovement.start();
+
+                    //Start the talking sounds
+                    sound.playHowAreYouSound();
+                }
+            };
+            howareyouHandler.postDelayed(howareyouRunnable, 4000);
+            //End of Greeting
 
         ConstraintLayout constraintLayout = findViewById(R.id.layout);
         AnimationDrawable backgroundDrawable1 = (AnimationDrawable) constraintLayout.getBackground();
@@ -210,18 +253,16 @@ public class MainActivity extends AppCompatActivity {
 
                     sound.playNoticeSound();
                     //Study Tutorial Dialog Box.
-                    ImageView carrotImage = new ImageView(MainActivity.this);
-                    carrotImage.setImageResource(R.drawable.ic_carrot);
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Eating!")
+                            .setIcon(R.drawable.eatbutton)
                             .setMessage("Maintain the overall health of TuCyute by eating regularly.")
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //code if they select "yes"
                                 }
-                            })
-                            .setView(carrotImage);
+                            });
 
                     AlertDialog alert = builder.create();
                     alert.show();
@@ -354,12 +395,12 @@ public class MainActivity extends AppCompatActivity {
                 if ((age >= 13)) {
                     ageStatusText.setText("Teenager");
                 }
-                if ((age == 20)) {
+                if ((age >= 20)) {
                     ageStatusText.setText("Adult");
                 }
-                if ((age == 30)) {
+                if ((age >= 30)) {
                 }
-                if ((age == 35)) {
+                if ((age >= 35)) {
                 }
                 if ((age >= 60)) {
                     ageStatusText.setText("Senior Citizen");
@@ -397,9 +438,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if ((age == 1)) {
 
-                    //Play the eating sound
-                    //treatSound.start();
-
                     //Adding treats upon sleep.
                     treatValue.setText(Integer.toString(treat));
                     treatMovement.stop();
@@ -407,16 +445,6 @@ public class MainActivity extends AppCompatActivity {
 
                     //Clears the sleep face animation when the button is pressed.
                     sleepFace.setBackgroundResource(R.drawable.blank);
-
-                    //Starts the talking face animation again
-                    ImageView talk = findViewById(R.id.mainface);
-                    talk.setBackgroundResource(R.drawable.talkinganimation);
-                    talkFaceMovement = (AnimationDrawable) talk.getBackground();
-                    talkFaceMovement.start();
-
-                    //Start the talking sounds
-
-                    sound.playTalkSound();
                 }
 
                 //Saves age status level
